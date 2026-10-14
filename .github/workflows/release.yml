@@ -1,0 +1,64 @@
+# Builds both downloads for every release: a PC zip and a signed Android APK (Capacitor wrapper around index.html)
+name: Build downloads
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build for (e.g. v1.0.1)
+        required: true
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: PC package
+        run: |
+          mkdir -p out/Bloodlot-Ascension
+          cp index.html out/Bloodlot-Ascension/Bloodlot-Ascension.html
+          cp favicon.ico out/Bloodlot-Ascension/bloodlot.ico
+          printf 'BLOODLOT ASCENSION %s\r\nEN: Open Bloodlot-Ascension.html in Chrome, Edge or Firefox. No install needed.\r\nCZ: Otevri Bloodlot-Ascension.html v prohlizeci. Nic se neinstaluje.\r\n' "$TAG" > out/Bloodlot-Ascension/README.txt
+          (cd out && zip -qr "Bloodlot-Ascension-PC-$TAG.zip" Bloodlot-Ascension)
+      - name: Android app
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KP: ${{ secrets.ANDROID_KEY_PASS }}
+        run: |
+          sudo apt-get install -y -qq imagemagick >/dev/null
+          mkdir app && cd app
+          npm init -y >/dev/null
+          npm i -s @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+          mkdir www && cp ../index.html ../manifest.webmanifest ../sw.js ../icon-192.png ../icon-512.png www/
+          npx cap init "Bloodlot Ascension" com.samarksurvival.bloodlot --web-dir www
+          npx cap add android
+          RES=android/app/src/main/res
+          for d in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do n=${d%%:*}; s=${d##*:}
+            for f in ic_launcher ic_launcher_round ic_launcher_foreground; do convert ../icon-512.png -resize ${s}x${s} $RES/mipmap-$n/$f.png; done; done
+          find $RES/mipmap-anydpi-v26 -name 'ic_launcher*.xml' -delete
+          V=${TAG#v}; IFS=. read -r MA MI PA <<< "$V"; CODE=$((MA*10000+MI*100+PA))
+          sed -i "s/versionCode [0-9]*/versionCode $CODE/; s/versionName \"[^\"]*\"/versionName \"$V\"/" android/app/build.gradle
+          cd android && chmod +x gradlew && ./gradlew assembleRelease --no-daemon -q
+          BT=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)
+          echo "$KS_B64" | base64 -d > ks.p12
+          "$ANDROID_HOME/build-tools/$BT/zipalign" -f 4 app/build/outputs/apk/release/app-release-unsigned.apk aligned.apk
+          "$ANDROID_HOME/build-tools/$BT/apksigner" sign --ks ks.p12 --ks-type PKCS12 --ks-key-alias bloodlot --ks-pass env:KP --key-pass env:KP --out "../../out/Bloodlot-Ascension-Android-$TAG.apk" aligned.apk
+          shred -u ks.p12
+          "$ANDROID_HOME/build-tools/$BT/apksigner" verify "../../out/Bloodlot-Ascension-Android-$TAG.apk"
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Bloodlot Ascension $TAG" --notes "Patch notes are in the game under What's new."
+          gh release upload "$TAG" out/*.zip out/*.apk --clobber
