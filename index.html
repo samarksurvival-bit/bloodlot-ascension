@@ -396,6 +396,13 @@ button{font:inherit;color:inherit}
 .touchmode #luckP{min-width:0;padding:4px 10px}.touchmode #luckV{font-size:20px}.touchmode #luckP .lbl{font-size:9px}
 .touchmode #bossbar{width:min(300px,60vw);top:calc(64px + env(safe-area-inset-top,0px))}.touchmode #bossName{font-size:14px}
 @media (max-height:480px){.touchmode .tbtns{transform:scale(.8);transform-origin:right bottom}.touchmode #stickHint{bottom:calc(60px + env(safe-area-inset-bottom,0px))}.touchmode #belt{top:28%}.touchmode #stickHint span{display:none}}
+/* minimap */
+#mmapP{padding:3px;cursor:pointer;pointer-events:auto;line-height:0;background:rgba(8,5,10,.82)}
+#mmapP canvas{width:150px;height:112px;display:block;image-rendering:pixelated}
+#mmapP:hover{border-color:var(--gold2)}#mmapP:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.touchmode #mmapP canvas{width:112px;height:84px}
+.mapcard{max-width:820px;overflow-x:hidden}.mapcard h2{text-align:center}#bigmap{width:100%;height:auto;display:block;image-rendering:pixelated;background:#07050a;border:1px solid var(--line)}
+.maplegend{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:14px;margin:8px 0 0}.maplegend i{display:inline-block;width:9px;height:9px;margin-right:-6px;border:1px solid #000}
 @media (prefers-reduced-motion:reduce){ .die,#banner,.bar i,#rvFlash{transition:none} .wait,.rainbow{animation:none} }
 </style>
 
@@ -416,6 +423,7 @@ button{font:inherit;color:inherit}
     <div id="seedT"></div>
     <div id="luckP" class="panel"><div class="lbl">LUCK</div><div id="luckV">×1.00</div><div id="luckB"></div></div>
     <button id="rollP" class="panel">[R] Roll Fate Die · <b id="diceN">0</b></button>
+    <button id="mmapP" class="panel" aria-label="Open the floor map (Tab)" title="Map [Tab]"><canvas id="mmap" width="300" height="224"></canvas></button>
   </div>
   <div id="wpnP" class="panel" hidden><canvas id="wpnCv" width="112" height="112"></canvas><div><div id="wpnName"></div><div id="wpnSub"></div><div id="wpnSk"></div><div class="accrow" title="Accessories"><canvas id="acc0" width="56" height="56"></canvas><canvas id="acc1" width="56" height="56"></canvas></div></div></div>
   <div id="godP" class="panel" hidden><div style="min-width:0"><div id="godName"></div><div id="godSub"></div><div class="dbar"><i id="divF"></i></div><div id="godCd"></div></div><canvas id="godCv" width="112" height="112"></canvas></div>
@@ -476,6 +484,8 @@ button{font:inherit;color:inherit}
       </div>
     </div>
   </div>
+
+  <div id="mapov" class="ov" hidden><div class="card gframe mapcard"><h2 id="mapTitle">Map</h2><canvas id="bigmap" width="1120" height="832" role="img" aria-label="Map of the current floor"></canvas><p class="maplegend"><i style="background:#ffd060"></i>You <i style="background:#fff"></i>Exit <i style="background:#e8b040"></i>Shrine <i style="background:#60e0a0"></i>Merchant <i style="background:#ff3a4a"></i>Boss <i style="background:#c8884a"></i>Chest <span class="dim">· dark rooms are still unexplored</span></p><div class="btns"><button class="btn red" id="mapClose" style="text-align:center">Close [Tab]</button></div></div></div>
 
   <div id="upd" class="ov" hidden><div class="card gframe updcard"><h2>What's new</h2><div id="updBody"></div><div class="btns"><button class="btn red" id="updClose" style="text-align:center">Continue</button></div></div></div>
 
@@ -3345,7 +3355,7 @@ function showDeath(cause){
 }
 
 /* ---------- Overlays ---------- */
-const OVS=['start','event','dice','wheel','inv','death','pause','reveal','index','upd'];
+const OVS=['start','event','dice','wheel','inv','death','pause','reveal','index','upd','mapov'];
 function openOv(id){OVS.forEach(o=>$(o).hidden=o!==id);if(G){G.pause=true;G.ov=id;}MB.l=false;for(const k in K)K[k]=false;TB.atk=false;
  const f=$(id).querySelector('button:not([hidden]):not([disabled]),input');if(f&&!TOUCH)setTimeout(()=>f.focus(),30);}
 function closeOv(){OVS.forEach(o=>$(o).hidden=true);RV=null;if(G){G.pause=false;G.ov=null;}}
@@ -3787,6 +3797,7 @@ addEventListener('keydown',e=>{
  const k=e.key.toLowerCase();
  if(!G){if(k==='enter'&&!$('start').hidden)startGame();return;}
  if(k==='m'){toggleMute();return;}
+ if(k==='tab'){e.preventDefault();if(G.ov==='mapov')closeOv();else if(!G.ov&&!G.dead)openMap();return;}
  if(G.ov==='reveal'&&CINE_RUN){CINE_RUN.skip();return;}
  if(G.ov==='reveal'&&RV&&RV.phase==='show'){if(k==='e'){$('rvBtns').firstChild.click();return;}}
  if(k==='i'||(k==='escape'&&G.ov==='inv')){toggleInv();e.preventDefault();return;}
@@ -4151,13 +4162,37 @@ let lastErr='';
 function showErr(where,e){const m=`${where}: ${e&&e.message||e}`;if(m===lastErr)return;lastErr=m;let el=$('errBox');if(!el){el=document.createElement('div');el.id='errBox';el.style.cssText='position:fixed;left:12px;right:12px;bottom:70px;z-index:50;background:#3a0c15;border:1px solid #ec5466;color:#fff;font:13px ui-monospace,Consolas,monospace;padding:8px 10px;white-space:pre-wrap;user-select:text';document.body.appendChild(el);}
  el.textContent='Game error (send this to Claude):\n'+m+'\n'+String(e&&e.stack||'').split('\n').slice(1,4).join('\n');try{console.error(e);}catch(_){}}
 function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
- if(G){if(!G.pause){try{update(dt);}catch(e){showErr('update',e);}}try{render();}catch(e){showErr('render',e);}try{hud();}catch(e){showErr('hud',e);}}
+ if(G){if(!G.pause){try{update(dt);}catch(e){showErr('update',e);}}try{render();}catch(e){showErr('render',e);}try{hud();drawMinimap();}catch(e){showErr('hud',e);}}
  else{R_(0,0,VW,VH,'#050406');fx.setTransform(1,0,0,1,0,0);fx.clearRect(0,0,fxc.width,fxc.height);}
  requestAnimationFrame(frame);}
 addEventListener('error',e=>showErr('script',e.error||e.message));
+/* ---------- Minimap: rooms stay dark silhouettes until you explore them ---------- */
+const MAPMARK={stairs:'#ffffff',zastavka:'#ffffff',altar:'#e8b040',divine:'#e8b040',fortune:'#e8b040',shrine:'#e8b040',demon:'#e8b040',sanctum:'#e8b040',fountain:'#8ad8ff',lectern:'#e8b040',anvil:'#e8b040',pool:'#8ad8ff',merchant:'#60e0a0',chest:'#c8884a',jentry:'#ffb060',waystone:'#9ad0ff'};
+function drawMapTo(c,W,H,big){if(!G||!G.map)return;const s=Math.min(W/MW,H/MH),ox=Math.floor((W-MW*s)/2),oy=Math.floor((H-MH*s)/2),px=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(ox+x*s,oy+y*s,w*s,h*s);};
+ c.clearRect(0,0,W,H);c.fillStyle='#07050a';c.fillRect(0,0,W,H);
+ const pocket=r=>r.jiri||r.crag,cur=G.curPocket,inPocket=(x,y,r)=>x>=r.x-1&&x<=r.x+r.w&&y>=r.y-1&&y<=r.y+r.h,hidden=(x,y)=>{for(const r of G.rooms)if(pocket(r)&&r!==cur&&inPocket(x,y,r))return true;return false;};
+ if(!G.outdoor){for(const r of G.rooms){if(pocket(r)&&r!==cur)continue;if(r.village)continue;px(r.x,r.y,r.w,r.h,'#18121e');c.strokeStyle='#2e2638';c.lineWidth=Math.max(1,s*.25);c.strokeRect(ox+r.x*s+.5,oy+r.y*s+.5,r.w*s-1,r.h*s-1);}}
+ const here=roomAt(P.x,P.y),tt=G.ttype,OUT={1:'#cdd5e2',2:'#5c5e68',3:'#dfe5ee',4:'#a8503a',5:'#3a5a7a',6:'#8a6a4a',7:'#55575f',8:'#7a7068'};
+ for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const i=y*MW+x;if(!G.seen[i]||hidden(x,y))continue;
+  if(G.map[i]){let col=G.outdoor&&tt?OUT[tt[i]]||'#cdd5e2':'#6e6276';if(!G.outdoor&&here&&!here.village&&x>=here.x&&x<here.x+here.w&&y>=here.y&&y<here.y+here.h)col='#9a8ca2';if(G.water&&G.water[i]&&!G.outdoor)col='#4a6a8a';px(x,y,1,1,col);}
+  else if(G.outdoor&&G.forest&&G.forest[i])px(x,y,1,1,'#16301f');}
+ const dot=(x,y,r,col)=>{c.fillStyle='#000';c.beginPath();c.arc(ox+x/T*s,oy+y/T*s,r+1,0,7);c.fill();c.fillStyle=col;c.beginPath();c.arc(ox+x/T*s,oy+y/T*s,r,0,7);c.fill();};
+ const ms=Math.max(1.6,s*(big?.55:.7));
+ for(const o of G.objs){const col=MAPMARK[o.type];if(!col||o.gone||o.deco&&o.type!=='zastavka'||(o.type==='zastavka'&&!o.exit))continue;if(o.pocket&&o.pocket!==cur)continue;const i=Math.floor(o.y/T)*MW+Math.floor(o.x/T);if(!G.seen[i]||hidden(Math.floor(o.x/T),Math.floor(o.y/T)))continue;
+  if(o.type==='stairs'||o.exit){c.fillStyle='#000';c.fillRect(ox+o.x/T*s-ms*1.4,oy+o.y/T*s-ms*1.4,ms*2.8,ms*2.8);c.fillStyle=col;c.fillRect(ox+o.x/T*s-ms,oy+o.y/T*s-ms,ms*2,ms*2);}else dot(o.x,o.y,ms*(o.used?.6:1),o.used?'#5a5048':col);}
+ if(G.boss&&!G.boss.dead){const b=G.boss,i=Math.floor(b.y/T)*MW+Math.floor(b.x/T);if(G.seen[i]||b.awake)dot(b.x,b.y,ms*1.4,'#ff3a4a');}
+ const pulse=.75+.25*Math.sin(performance.now()/180);dot(P.x,P.y,ms*1.35*pulse,'#ffd060');
+ if(big){c.fillStyle='rgba(255,208,96,.9)';c.font=`700 ${Math.round(s*1.4)}px Cinzel, Georgia, serif`;c.textAlign='center';c.fillText('YOU',ox+P.x/T*s,oy+P.y/T*s-ms*3);}}
+let mmT=0;function drawMinimap(){if(!G||G.dead||$('topr').hidden)return;if(++mmT%5)return;const cv=$('mmap');drawMapTo(cv.getContext('2d'),cv.width,cv.height,false);}
+function openMap(){if(!G)return;openOv('mapov');$('mapTitle').textContent=G.outdoor?'Map · Ludvíkov pod Pradědem':`Map · Floor ${G.floor}`;const cv=$('bigmap');drawMapTo(cv.getContext('2d'),cv.width,cv.height,true);}
+$('mmapP').onclick=openMap;$('mapClose').onclick=()=>closeOv();
 /* ---------- Update log (shown in game; newest first) ---------- */
-const GAME_VER='1.0.1';
+const GAME_VER='1.0.2';
 const UPDATES=[
+ {v:'1.0.2',d:'2026-10-14',t:'Never get lost again',items:[
+  'A minimap in the top-right corner. Every room shows as a dark silhouette until you explore it, then it lights up tile by tile. Corridors appear as you walk them.',
+  'The room you are standing in is highlighted, and the map marks you, the exit, shrines, merchants, chests and the boss once you have found them.',
+  'Click or tap the minimap (or press Tab) to open a large map of the whole floor.']},
  {v:'1.0.1',d:'2026-10-14',t:'Made for phones',items:[
   'New touch controls: a big Attack button with Dash, God and Use around it, all within thumb reach. Roll, Bag and Menu sit just above.',
   'A cleaner phone HUD: compact health and luck panels, and potions in a side column showing only the ones you carry.',
