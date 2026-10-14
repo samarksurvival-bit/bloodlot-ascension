@@ -3134,7 +3134,7 @@ function hitRoll(e){
 }
 function attack(){
  if(P.atkT>0)return;const s=P.st,wt=P.w?WT[P.w.type]:FIST;P.atkT=wt.cd/(1+s.atkSpdPct/100);const ang=aimAngle();P.swing=.18;P.swingAng=ang;sfx('swing');
- if(chance(s.fumble)){text(P.x,P.y-12,'Miss!','#9a9a9a');if(P.w&&chance(.1)){addGround(P.x+Math.cos(ang)*10,P.y+Math.sin(ang)*10,'weapon',P.w);log(`${P.w.name} slipped from your grip!`,'bad');P.w=null;recalc();}return;}
+ if(chance(s.fumble)){text(P.x,P.y-12,'Miss!','#9a9a9a');if(P.w&&chance(.1)){G.loot.push({x:P.x+Math.cos(ang)*26,y:P.y+Math.sin(ang)*26,kind:'weapon',v:P.w,t:0,counted:1,own:1,delay:.8});log(`${P.w.name} slipped from your grip!`,'bad');P.w=null;recalc();}return;}
  if(wt.ranged){const h=hitRoll(null),sp=wt.arrow?280:wt.home?170:200;G.projs.push({x:P.x,y:P.y-4,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,r:3,dmg:h.d,crit:h.crit,mega:h.mega,owner:'player',kind:'bolt',col:rarCol(P.w.rar),life:1.4,arrow:wt.arrow,pierce:wt.pierce||0,home:wt.home,hitSet:[]});return;}
  for(const e of G.enemies.slice()){
   if(e.dead)continue;const dx=e.x-P.x,dy=e.y-P.y,d=Math.hypot(dx,dy);if(d>wt.range+e.r)continue;
@@ -3902,9 +3902,11 @@ function update(dt){
  roomTick(dt);updCritters(dt);updFauna(dt);ambient(dt);updFam(dt);updEnemies(dt);G.enemies=G.enemies.filter(e=>!e.dead);updProjs(dt);
  if(!G.dead)for(const l of G.loot){const dx=P.x-l.x,dy=P.y-l.y,d=Math.hypot(dx,dy)||1;l.t+=dt;
   if((l.kind==='gold'||l.kind==='dice')&&d<34){l.x+=dx/d*130*dt;l.y+=dy/d*130*dt;}
+  if(l.delay>0){l.delay-=dt;continue;}
   if(d<10){if(l.kind==='gold'){l.taken=true;gainGold(l.v);sfx('coin');}
    else if(l.kind==='dice'){l.taken=true;G.dice++;sfx('pick');toast('+1 Fate Die',3);}
    else if(l.kind==='potion'){l.taken=true;G.pots[l.v]++;sfx('pick');toast(`+1 ${POTS[l.v].n}`,l.v>=3?6:l.v>=1?1:0);}
+   else if(l.kind==='weapon'&&l.own){const w=l.v;l.taken=true;if(!P.w)equip(w);else stash(w);sfx('pick');toast(`Recovered ${w.name}`,Math.min(w.rar,7));}
    else if(l.kind==='weapon'){const w=l.v;if(!l.counted){l.counted=1;recordPull(w);}
     if(w.rar<(S.auto||0)){l.taken=true;const g=scrapVal(w);G.gold+=g;G.goldTotal+=g;sfx('coin');toast(`Auto-scrapped ${RAR[w.rar].n} (+${g})`,0);}
     else if(w.rar>=4){l.taken=true;openReveal(w,false);}
@@ -4187,8 +4189,11 @@ let mmT=0;function drawMinimap(){if(!G||G.dead||$('topr').hidden)return;if(++mmT
 function openMap(){if(!G)return;openOv('mapov');$('mapTitle').textContent=G.outdoor?'Map · Ludvíkov pod Pradědem':`Map · Floor ${G.floor}`;const cv=$('bigmap');drawMapTo(cv.getContext('2d'),cv.width,cv.height,true);}
 $('mmapP').onclick=openMap;$('mapClose').onclick=()=>closeOv();
 /* ---------- Update log (shown in game; newest first) ---------- */
-const GAME_VER='1.0.2';
+const GAME_VER='1.0.3';
 const UPDATES=[
+ {v:'1.0.3',d:'2026-10-14',t:'Butterfingers fix',items:[
+  'Fixed: when a missed swing made your weapon slip from your grip, picking it back up replayed the whole drop reveal (and the cinematic for Ascended and Transcendent gear) and counted it as a new pull.',
+  'A slipped weapon now lands a step away and goes straight back into your hand when you pick it up.']},
  {v:'1.0.2',d:'2026-10-14',t:'Never get lost again',items:[
   'A minimap in the top-right corner. Every room shows as a dark silhouette until you explore it, then it lights up tile by tile. Corridors appear as you walk them.',
   'The room you are standing in is highlighted, and the map marks you, the exit, shrines, merchants, chests and the boss once you have found them.',
