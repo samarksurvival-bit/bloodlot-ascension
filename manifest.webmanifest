@@ -1,0 +1,15 @@
+{
+  "name": "Bloodlot Ascension",
+  "short_name": "Bloodlot",
+  "description": "A dark fantasy RNG roguelike. Every blade is a roll.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#050307",
+  "theme_color": "#0a0608",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
