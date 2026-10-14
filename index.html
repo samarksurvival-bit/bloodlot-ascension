@@ -2380,7 +2380,7 @@ function warmArt(){const key=SCALE+'|'+DPR;if(key===WARMK)return;let all=true;
 let warmT=0;function warmSoon(){clearTimeout(warmT);warmT=setTimeout(()=>{WARMK='';warmArt();},300);}
 setTimeout(warmSoon,1500);
 addEventListener('resize',warmSoon);
-function drawArt(c,a,row,col,flip,b,flash,frost,alpha){const sc=a.H*SCALE/(a.AY-12);if(WARMK!==SCALE+'|'+DPR&&!warmT)warmArt();
+function drawSheetArt(c,a,row,col,flip,b,flash,frost,alpha){const sc=a.H*SCALE/(a.AY-12);if(WARMK!==SCALE+'|'+DPR&&!warmT)warmArt();
  const dw=Math.round(a.FW*sc),dh=Math.round(a.FH*sc),dx=-Math.round(a.AX*sc),dy=-Math.round(a.AY*sc)+2;
  const k=sprFrame(a.im,col*a.FW,row*a.FH,a.FW,a.FH,dw,dh,a.rimCv);
  c.save();if(flip)c.scale(-1,1);sprDraw(c,k,dx,dy,dw,dh,b,flash,frost,alpha,.22+.38*b);c.restore();return sc;}
@@ -2391,7 +2391,7 @@ function drawEnemyArt(c,e,t,a){const br=a.boss?Math.max(.45,lightAt(e.x,e.y)):li
  const lift=a.fly?a.fly+Math.sin(t*5+e.x*.3)*1.3:0;
  if(a.shadow){const sk=a.fly?.75-lift*.02:1;c.globalAlpha=(a.fly?.3:.45)*br;c.fillStyle='#000';c.beginPath();c.ellipse(0,0,e.r*SCALE*1.5*sk,e.r*SCALE*.42*sk,0,0,7);c.fill();c.globalAlpha=1;}
  if(e.z)c.translate(0,-e.z*SCALE);if(lift)c.translate(0,-Math.round(lift*SCALE));
- drawArt(c,a,fr.row,fr.col,fr.flip,Math.min(1,br),e.flash>0,e.slowT>0||G.freezeT>0,al);c.restore();
+ drawSheetArt(c,a,fr.row,fr.col,fr.flip,Math.min(1,br),e.flash>0,e.slowT>0||G.freezeT>0,al);c.restore();
  const top=Y-(a.H+(a.fly||0))*SCALE-4;
  if(!a.boss&&e.hp<e.maxHp&&e.awake){const w=e.r*SCALE*2.4,yy=top-6;c.fillStyle='rgba(0,0,0,.8)';c.fillRect(X-w/2-1,yy-1,w+2,5);c.fillStyle=e.elite?PRE[e.pre].c:'#d02a3a';c.fillRect(X-w/2,yy,w*clamp(e.hp/e.maxHp,0,1),3);}
  if(e.charmT>0){c.fillStyle='#ff70b0';c.font='bold 14px serif';c.textAlign='center';c.fillText('♥',X,top-10);}
@@ -2400,7 +2400,7 @@ function drawEnemyArt(c,e,t,a){const br=a.boss?Math.max(.45,lightAt(e.x,e.y)):li
 function addCorpse(e){const a=ENEMY_ART[e.type==='boss'?'boss_'+e.bk:e.type];if(!a)return;const m=e._am||{view:'front'};(G.corpses||(G.corpses=[])).push({a,x:e.x,y:e.y+e.r,t0:G.time,view:m.view,flip:m.view==='side'&&(m.dir??(P.x>=e.x?1:-1))!==a.face,floor:G.floor});}
 function drawCorpses(c,t){if(!G.corpses||!G.corpses.length)return;G.corpses=G.corpses.filter(k=>k.floor===G.floor&&t-k.t0<(k.a.boss?3.2:1.6));
  for(const k of G.corpses){const [row,n]=k.a.rows[k.view+'_death'],el=t-k.t0,fd=k.a.boss?.3:.13,col=Math.min(n-1,Math.floor(el/fd)),hold=k.a.boss?2.4:1.1,al=el>hold?Math.max(0,1-(el-hold)/.6):1;
-  const [X,Y]=toS(k.x,k.y),fall=k.a.fly?k.a.fly*Math.max(0,1-el/.32)**2:0;c.save();c.translate(Math.round(X),Math.round(Y-fall*SCALE));drawArt(c,k.a,row,col,k.flip,Math.min(1,lightAt(k.x,k.y-2)+.25),false,false,al);c.restore();}}
+  const [X,Y]=toS(k.x,k.y),fall=k.a.fly?k.a.fly*Math.max(0,1-el/.32)**2:0;c.save();c.translate(Math.round(X),Math.round(Y-fall*SCALE));drawSheetArt(c,k.a,row,col,k.flip,Math.min(1,lightAt(k.x,k.y-2)+.25),false,false,al);c.restore();}}
 function drawEnemyHQ(c,e,t){
  {const a=ENEMY_ART[e.type==='boss'?(e.bk==='patrman'?'':'boss_'+e.bk):e.type];if(artOk(a))return drawEnemyArt(c,e,t,a);}
  const boss=e.type==="boss",sz=boss?(e.bk==='patrman'?24:34):(ED[e.type]&&ED[e.type].sz)||18;
@@ -4388,8 +4388,9 @@ function tutTick(){if(!G)return;if(!G.tut){if(!S.tutDone&&!G.tutChk&&G.floor===1
 $('tutSkip').onclick=()=>tutEnd(true);
 $('btnTut').onclick=()=>{closeOv();tutStart();};
 /* ---------- Update log (shown in game; newest first) ---------- */
-const GAME_VER='1.1.0';
+const GAME_VER='1.1.1';
 const UPDATES=[
+ {v:'1.1.1',d:'2026-10-14',t:'Hotfix',items:['Fixed a crash ("Cannot read properties of undefined") that happened when a weapon with special artwork was drawn.']},
  {v:'1.1.0',d:'2026-10-14',t:'The Great Rework',items:[
   'Every monster has been redrawn with hand-made animated art: idle, walk, attack, hit and death, seen from the front and the side.',
   'All 10 bosses are redrawn and fight with three unique attacks each – beams, falling pillars, slashes, novas and summons. Every attack is telegraphed on the ground so you can dodge it.',
