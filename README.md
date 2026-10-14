@@ -20,3 +20,7 @@ The whole game is a single HTML file. Progress is saved in your browser.
 | 1–6 · I · P | potions · inventory · pause |
 
 Patch notes are in the game: **What's new** on the title screen.
+
+## Download
+
+Grab the latest **Bloodlot-Ascension-vX.zip** from the [Releases page](../../releases/latest), unzip it and open `Bloodlot-Ascension.html` in your browser.
