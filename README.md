@@ -22,6 +22,7 @@ Progress is saved on your device. Patch notes are in the game: **What's new** on
 | Mouse / Space | Attack button | attack (auto-aims on phone) |
 | Shift | Dash | dash (needs a dash skill) |
 | Q | God | god ability |
+| ← ↑ → ↓ | ability buttons | Bizarre (Stand) abilities |
 | R | Roll | roll a Fate Die |
 | F | Use | shrines, altars, chests, stairs |
 | 1–6 · I · P | potions · Bag · ☰ | potions · inventory · pause |
