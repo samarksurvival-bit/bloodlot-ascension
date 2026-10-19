@@ -7173,7 +7173,7 @@ function tutTick(){if(!G)return;if(!G.tut){if(!S.tutDone&&!G.tutChk&&G.floor===1
 $('tutSkip').onclick=()=>tutEnd(true);
 $('btnTut').onclick=()=>{closeOv();tutStart();};
 // TEST BUILD ONLY: strip this block and the #pause .sttest markup before any release
-const STAND_TEST=true;
+const STAND_TEST=false;
 if(!STAND_TEST)document.querySelector('#pause .sttest').remove();else{
 $('standTest').innerHTML=Object.values(STANDS).map(d=>'<button class="btn" type="button" data-st="'+d.id+'" style="--sc:'+d.col+'">'+d.n+'</button>').join('');
 // city teleport (test build): jump next to any town of the open world
