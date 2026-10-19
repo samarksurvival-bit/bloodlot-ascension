@@ -1,0 +1,453 @@
+[
+  {
+    "city": "Crownhold",
+    "dir": "crown",
+    "name": "Gilded Regent",
+    "title": "Tyrant of the Crownlands",
+    "visual": {
+      "sprite": "crown_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "crown_arena.webp",
+    "attacks": [
+      "Royal Cleave",
+      "Crownfall Pillars",
+      "Judgement Halo"
+    ]
+  },
+  {
+    "city": "Frostspire",
+    "dir": "frost",
+    "name": "Rime Wyrm",
+    "title": "Ancient Dragon of the Ice Vault",
+    "visual": {
+      "sprite": "frost_boss.webp",
+      "frame_width": 384,
+      "frame_height": 252,
+      "columns": 6,
+      "rows": 28,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      },
+      "phase_2_rows": "14-27",
+      "size_in_game": "102 world px high",
+      "scale_in_game": 2.17
+    },
+    "arena": "frost_arena.webp",
+    "attacks": [
+      "Frost Breath",
+      "Crystal Spike Eruption",
+      "Blizzard Shards"
+    ]
+  },
+  {
+    "city": "Skyreach Watch",
+    "dir": "sky",
+    "name": "Storm Roc",
+    "title": "Thunderbird Above the Clouds",
+    "visual": {
+      "sprite": "sky_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "sky_arena.webp",
+    "attacks": [
+      "Static Feathers",
+      "Lightning Dive",
+      "Cyclone Burst"
+    ]
+  },
+  {
+    "city": "Cinderforge",
+    "dir": "cinder",
+    "name": "Forge Colossus",
+    "title": "Titan of the Everlasting Furnace",
+    "visual": {
+      "sprite": "cinder_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "cinder_arena.webp",
+    "attacks": [
+      "Molten Fault",
+      "Anvil Sweep",
+      "Furnace Pulse"
+    ]
+  },
+  {
+    "city": "Umbral Keep",
+    "dir": "umbral",
+    "name": "Nocturne Widow",
+    "title": "Weaver of the Black Veil",
+    "visual": {
+      "sprite": "umbral_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "umbral_arena.webp",
+    "attacks": [
+      "Shadow Threads",
+      "Moonfang Crescent",
+      "Nightshade Traps"
+    ]
+  },
+  {
+    "city": "Prismhall",
+    "dir": "prism",
+    "name": "Prism Seraph",
+    "title": "The Shattered Spectrum",
+    "visual": {
+      "sprite": "prism_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "prism_arena.webp",
+    "attacks": [
+      "Rainbow Ray",
+      "Refraction Shards",
+      "Crystal Cathedral"
+    ]
+  },
+  {
+    "city": "Eldertree",
+    "dir": "elder",
+    "name": "Ancient Rootkeeper",
+    "title": "Memory of the First Forest",
+    "visual": {
+      "sprite": "elder_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "elder_arena.webp",
+    "attacks": [
+      "Root Entanglement",
+      "Awaken Seedlings",
+      "Verdant Crescent"
+    ]
+  },
+  {
+    "city": "Lakeguard",
+    "dir": "lake",
+    "name": "Tidal Leviathan",
+    "title": "Serpent Beneath the Water Gate",
+    "visual": {
+      "sprite": "lake_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "lake_arena.webp",
+    "attacks": [
+      "Abyssal Torrent",
+      "Tidal Rings",
+      "Coral Barrage"
+    ]
+  },
+  {
+    "city": "Sunspire",
+    "dir": "sun",
+    "name": "Solar Scarab",
+    "title": "Devourer of the Twin Suns",
+    "visual": {
+      "sprite": "sun_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "sun_arena.webp",
+    "attacks": [
+      "Golden Wheel",
+      "Solar Obelisks",
+      "Dawnfire Ray"
+    ]
+  },
+  {
+    "city": "Saltmere",
+    "dir": "salt",
+    "name": "Drowned Admiral",
+    "title": "Captain of the Sunken Armada",
+    "visual": {
+      "sprite": "salt_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "salt_arena.webp",
+    "attacks": [
+      "Trident Sweep",
+      "Cursed Broadside",
+      "Anchor Rain"
+    ]
+  },
+  {
+    "city": "Mirewatch",
+    "dir": "mire",
+    "name": "Bog Oracle",
+    "title": "Herald of the Drowned Bog",
+    "visual": {
+      "sprite": "mire_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "mire_arena.webp",
+    "attacks": [
+      "Venom Globules",
+      "Croaking Eruption",
+      "Marsh Spawn"
+    ]
+  },
+  {
+    "city": "Emberisle",
+    "dir": "ember",
+    "name": "Ash Phoenix",
+    "title": "Reborn Flame of the Isles",
+    "visual": {
+      "sprite": "ember_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "ember_arena.webp",
+    "attacks": [
+      "Phoenix Talons",
+      "Rebirth Nova",
+      "Firewing Trail"
+    ]
+  },
+  {
+    "city": "Stonegate",
+    "dir": "stone",
+    "name": "Granite Juggernaut",
+    "title": "The Living Bastion",
+    "visual": {
+      "sprite": "stone_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "stone_arena.webp",
+    "attacks": [
+      "Hammerhead Rush",
+      "Shatterwall",
+      "Citadel Quake"
+    ]
+  },
+  {
+    "city": "The Void Citadel",
+    "dir": "void",
+    "name": "Abyss Watcher",
+    "title": "The Eye Beyond Time",
+    "visual": {
+      "sprite": "void_boss.webp",
+      "frame_width": 144,
+      "frame_height": 144,
+      "columns": 6,
+      "rows": 14,
+      "view_modes": [
+        "front",
+        "right-facing three-quarter"
+      ],
+      "animations": {
+        "idle": 0,
+        "walk": 1,
+        "attack_1": 2,
+        "attack_2": 3,
+        "attack_3": 4,
+        "hit": 5,
+        "death": 6
+      }
+    },
+    "arena": "void_arena.webp",
+    "attacks": [
+      "Event Horizon",
+      "Entropy Orbits",
+      "Eye of the Abyss"
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "source": "konceptní_list_ledového_wyrma_rime_wyrm.png",
+  "frame_width": 384,
+  "frame_height": 252,
+  "frames_per_row": 6,
+  "rows": 28,
+  "phase_1_rows": "0-13",
+  "phase_2_rows": "14-27",
+  "note": "Adapted from a concept sheet: phase 2 color transformation, repeated frames for motions lacking six unique source poses; not hand-drawn frame-by-frame animation.",
+  "upscale_method": "Lanczos with detail sharpening",
+  "upscale_factor": 1.5,
+  "performance_note": "High-res game atlas; sprites are downscaled and cached by the game engine"
+}
